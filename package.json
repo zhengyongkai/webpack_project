@@ -8,11 +8,19 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
-    "webpack-cli": "^4.9.2",
-    "webpack": "^5.72.0"
+    "node-sass": "^7.0.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
   },
   "devDependencies": {
+    "file-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "postcss": "^8.4.13",
+    "postcss-loader": "^6.2.1",
+    "postcss-preset-env": "^7.5.0",
+    "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
+    "url-loader": "^4.1.1",
     "webpack-dev-server": "^3.11.2"
   },
   "scripts": {

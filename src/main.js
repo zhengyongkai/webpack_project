@@ -7,6 +7,5 @@ console.log(a)
 
 const img = new Image()
 img.src = logo
-
+console.log(document.getElementById('imgBox'))
 document.getElementById('imgBox').appendChild(img)
-

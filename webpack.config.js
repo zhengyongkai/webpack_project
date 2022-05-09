@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 console.log("process.env.NODE_ENV=", process.env.NODE_ENV); // 打印环境变量
 
 const config = {
@@ -11,15 +12,74 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.css$/, //匹配所有的 css 文件
-        use: ["style-loader", "css-loader"], // use: 对应的 Loader 名称
+        test: /\.(s[ac]|c)ss$/i, //匹配所有的 sass/scss/css 文件
+        use: [ 
+          MiniCssExtractPlugin.loader, // 添加 loader
+          // ,"style-loader",
+          "css-loader", 
+          'postcss-loader',
+          'sass-loader'
+        ], // use: 对应的 Loader 名称
       },
+      // {
+      //   test: /\.(jpe?g|png|gif)$/i,
+      //   type: 'javascript/auto', //webpack5 的配置
+      //   loader: 'file-loader',
+      //   options: {
+      //     esModule: false, //解决html区域,vue模板引入图片路径问题
+      //     limit: 1000,
+      //     name: "[name].[hash:8].[ext]",
+      //   }
+      // },
+      // base64
+      // {
+      //   test: /\.(jpe?g|png|gif)$/i,
+      //   type: 'javascript/auto', //webpack5 的配置
+      //   use:[
+      //     {
+      //       loader: 'url-loader',
+      //       options: {
+      //         esModule: false,
+      //         name: '[name][hash:8].[ext]',
+      //         // 文件小于 50k 会转换为 base64，大于则拷贝文件
+      //         limit: 50 * 1024
+      //       }
+      //     }
+      //   ]
+      // },
+      //webpack5
+      {
+        test: /\.(jpe?g|png|gif)$/i,
+        type: 'asset',
+        generator: {
+          // 输出文件位置以及文件名
+          // [ext] 自带 "." 这个与 url-loader 配置不同
+          filename: "[name][hash:8][ext]"
+        },
+        parser: {
+          dataUrlCondition: {
+            maxSize: 50 * 1024 //超过50kb不转 base64
+          }
+        }
+      },
+      //file-loader  引用文件 url()
+      // url-loader 引用文件 url() 转成 base64 
+      // img-loader 压缩图片
+      // css-loader  webpack默认支持 js json 支持css需要css-loader
+      // style-loader 样式加载到html
+      // postcss-loader 兼容性
+      // sass-loader scss
+
     ],
   },
   plugins: [
+    
     // 配置插件
     new HtmlWebpackPlugin({
       template: "./src/index.html",
+    }),
+    new MiniCssExtractPlugin({ // 添加插件
+      filename: '[name].[hash:8].css'
     }),
   ],
   devServer: {
