@@ -1,12 +1,4 @@
-import './main.css';
-import './sass.scss'
-import logo from '../public/logo.png'
+import tpl from "./info.ks";
 
-const a = 'Hello ITEM'
-console.log(a)
-
-const img = new Image()
-img.src = logo
-
-document.getElementById('imgBox').appendChild(img)
-
+const oApp = document.querySelector("#app");
+oApp.innerHTML = tpl.template;
