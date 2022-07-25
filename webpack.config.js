@@ -1,42 +1,43 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const webpack = require("webpack");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const PurgecssWebpackPlugin = require("purgecss-webpack-plugin");
-const glob = require("glob"); // 文件匹配模式
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const PurgecssWebpackPlugin = require('purgecss-webpack-plugin');
+const RemoveCommentPlugin = require('./plugin');
+const glob = require('glob'); // 文件匹配模式
 const PATHS = {
-  src: resolve("src"),
+  src: resolve('src'),
 };
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
-console.log("process.env.NODE_ENV=", process.env.NODE_ENV); // 打印环境变量
+console.log('process.env.NODE_ENV=', process.env.NODE_ENV); // 打印环境变量
 
 const config = {
-  entry: "./src/index.js", // 打包入口地址
+  entry: './src/index.js', // 打包入口地址
   output: {
-    filename: "bundle.js", // 输出文件名
-    path: path.join(__dirname, "dist"), // 输出文件目录
+    filename: 'bundle.js', // 输出文件名
+    path: path.join(__dirname, 'dist'), // 输出文件目录
   },
   // cache 持久化缓存
   cache: {
-    type: "filesystem",
+    type: 'filesystem',
   },
   resolve: {
-    extensions: [".js", ".json", ".wasm"],
+    extensions: ['.js', '.json', '.wasm'],
     // 配置别名
     alias: {
-      "~": resolve("src"),
-      "@": resolve("src"),
-      components: resolve("src/components"),
+      '~': resolve('src'),
+      '@': resolve('src'),
+      components: resolve('src/components'),
     },
   },
   externals: {
-    jquery: "jQuery",
+    jquery: 'jQuery',
   },
   module: {
     noParse: /jquery|lodash/,
@@ -46,10 +47,10 @@ const config = {
         use: [
           MiniCssExtractPlugin.loader, // 添加 loader
           // ,"style-loader",
-          "cache-loader", // 获取前面 loader 转换的结果
-          "css-loader",
-          "postcss-loader",
-          "less-loader",
+          'cache-loader', // 获取前面 loader 转换的结果
+          'css-loader',
+          'postcss-loader',
+          'less-loader',
         ], // use: 对应的 Loader 名称
       },
       // {
@@ -81,11 +82,11 @@ const config = {
       //webpack5
       {
         test: /\.(jpe?g|png|gif)$/i,
-        type: "asset",
+        type: 'asset',
         generator: {
           // 输出文件位置以及文件名
           // [ext] 自带 "." 这个与 url-loader 配置不同
-          filename: "[name][hash:8][ext]",
+          filename: '[name][hash:8][ext]',
         },
         parser: {
           dataUrlCondition: {
@@ -97,12 +98,12 @@ const config = {
         test: /\.ks$/,
         use: [
           {
-            loader: "babel-loader",
+            loader: 'babel-loader',
           },
           {
-            loader: "dropConsole",
+            loader: 'dropConsole',
             options: {
-              filename: "banner1",
+              filename: 'banner1',
             },
           },
         ],
@@ -119,11 +120,11 @@ const config = {
   plugins: [
     // 配置插件
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: './src/index.html',
     }),
     new MiniCssExtractPlugin({
       // 添加插件
-      filename: "[name].[hash:8].css",
+      filename: '[name].[hash:8].css',
     }),
     // 忽视需要解析的插件
     new webpack.IgnorePlugin({
@@ -132,16 +133,17 @@ const config = {
     }),
     // 模块速度插件
     new BundleAnalyzerPlugin({
-      analyzerMode: "disabled", // 不启动展示打包报告的http服务器
+      analyzerMode: 'disabled', // 不启动展示打包报告的http服务器
       // generateStatsFile: true, // 是否生成stats.json文件
     }),
     // 忽略掉需要的插件
     new PurgecssWebpackPlugin({
       paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
     }),
+    new RemoveCommentPlugin({ options: true }),
   ],
   resolveLoader: {
-    modules: ["node_modules", path.resolve(__dirname, "build")],
+    modules: ['node_modules', path.resolve(__dirname, 'build')],
   },
   optimization: {
     minimize: true,
@@ -157,7 +159,7 @@ const config = {
     // 都是直接 copy 到 dist 目录下面。但是对于本地开发来说，这个过程太费时，
     // 也没有必要，所以在设置 contentBase 之后，就直接到对应的静态目录下面去读取文件，
     // 而不需对文件做任何移动，节省了时间和性能开销。
-    contentBase: path.resolve(__dirname, "public"), // 静态文件目录
+    contentBase: path.resolve(__dirname, 'public'), // 静态文件目录
     compress: true, //是否启动压缩 gzip
     port: 8080, // 端口号
     // open:true  // 是否自动打开浏览器
@@ -165,7 +167,7 @@ const config = {
 };
 
 module.exports = (env, argv) => {
-  console.log("argv.mode=", argv.mode); // 打印 mode(模式) 值
+  console.log('argv.mode=', argv.mode); // 打印 mode(模式) 值
   // 这里可以通过不同的模式修改 config 配置
   return config;
 };

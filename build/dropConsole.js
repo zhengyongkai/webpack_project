@@ -1,12 +1,11 @@
-const { tplReplace, tplCompiler } = require("./compiler");
-const { getOptions } = require("loader-utils");
+const { tplReplace, tplCompiler } = require('./compiler');
+const { getOptions } = require('loader-utils');
 
 function tplLoader(source) {
-  const { log } = getOptions(this);
+  console.log(source);
+  const { filename } = getOptions(this);
 
-  const _log = log
-    ? `console.log('compiled the file which is from ${this.resourcePath}')`
-    : "";
+  console.log(filename);
 
   const content = tplCompiler(source);
   // console.log(content);
